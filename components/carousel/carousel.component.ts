@@ -1,9 +1,9 @@
 // todo: add animate
 
-import {Component, OnDestroy, Input} from '@angular/core';
-import {NgFor} from '@angular/common';
-import {Ng2BootstrapConfig, Ng2BootstrapTheme} from '../ng2-bootstrap-config';
-import {SlideComponent} from './slide.component';
+import { Component, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
+import { NgFor } from '@angular/common';
+import { Ng2BootstrapConfig, Ng2BootstrapTheme } from '../ng2-bootstrap-config';
+import { SlideComponent } from './slide.component';
 
 export enum Direction {UNKNOWN, NEXT, PREV}
 
@@ -65,12 +65,24 @@ export class CarouselComponent implements OnDestroy {
     this.restartTimer();
   }
 
+  @Output() public onSlideChanged:EventEmitter<{slide:SlideComponent}> = new EventEmitter();
+
+  public get currentSlide():SlideComponent {
+    return this._currentSlide;
+  }
+
+  public set currentSlide(value:SlideComponent) {
+    this._currentSlide = value;
+    this.onSlideChanged.emit({slide: value});
+  }
+
   private slides:Array<SlideComponent> = [];
   private currentInterval:any;
   private isPlaying:boolean;
   private destroyed:boolean = false;
-  private currentSlide:SlideComponent;
   private _interval:number;
+
+  private _currentSlide:SlideComponent;
 
   public ngOnDestroy():void {
     this.destroyed = true;
